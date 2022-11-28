@@ -16,7 +16,7 @@ int main (int ac __attribute__((unused)), char **av)
 	while (1)	
 	{
 		
-		ptr = malloc (sizeof(size_t) * 32);
+		ptr = malloc (sizeof(size_t));
 		if (ptr == NULL)
 		{
 			printf("test1");
