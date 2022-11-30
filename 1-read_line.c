@@ -16,13 +16,6 @@ int main (int ac __attribute__((unused)), char **av __attribute__((unused)))
 
 	while (1)	
 	{
-		
-	/*	ptr = malloc (sizeof(size_t)); 
-		if (ptr == NULL)
-		{
-			printf("test1");
-			return (-1);
-		} */
 		j = getline (&buffer, &ptr, stdin);
 		if (j == -1)
 		{
@@ -32,7 +25,6 @@ int main (int ac __attribute__((unused)), char **av __attribute__((unused)))
 
 		printf("%s", buffer);
 		printf("$ ");
-/*		free(ptr); */
 	}
 	return (0);
 }
