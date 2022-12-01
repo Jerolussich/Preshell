@@ -15,7 +15,9 @@ char * get_env(char *name)
 		str = strtok(environ[i], "=");
 		if (strcmp(str, name) == 0)
 		{
-			return (strtok(NULL, "="));
+			str = strtok(NULL, "=");
+			free(buff);
+			return (str);
 		}
 	}
 }
@@ -25,3 +27,15 @@ void main(void)
 
 	printf("%s\n", get_env(env));
 }
+char * find_path(*str, stdin)
+{
+		strtok(str, "=");
+		strcat(str, stdin);
+		while (excve(str, stdin, NULL) == -1)
+		{
+			str = strtok(NULL, ":");
+			strcat(str, stdin);
+			excve(str, stdin, NULL);
+
+
+
