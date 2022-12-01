@@ -4,7 +4,12 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 extern char **environ;
-int main(int ac __attribute__((unused)), char **av);
-char * get_env(char *name)
+int main(int ac, char **av);
+char *get_env(char *name);
+char *find_path(char *str, char *input);
+char * attach_path(char *str, char const *input);
 #endif

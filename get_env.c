@@ -1,11 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-extern char **environ;
+#include "main.h"
 
 char * get_env(char *name)
 {
@@ -52,13 +45,3 @@ char * attach_path(char *str, char const *input)
 	else
 		return(NULL);
 }
-void main(void)
-{
-        char *env = "PATH";
-        char *input = "ls", *output;
-
-         output = get_env(env);
-         attach_path(output, input);
-}
-
-
