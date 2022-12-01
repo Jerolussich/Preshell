@@ -22,27 +22,36 @@ char * get_env(char *name)
 		}
 	}
 }
-void * attach_path(char *str, char const *input)
+char * attach_path(char *str, char const *input)
 {
-	int fk = 0;
-	int status;
+	int fk = 0, status, found;
 	struct stat st;
+	char * buff;
 
 		strtok(str, ":");
-		strcat(str, "/");
-		strcat(str, input);
-		fk = fork();
-		if (!fk)
+		strcat(buff, str);
+		strcat(buff, "/");
+		strcat(buff, input);
+		while (stat(buff, &st) == -1)
 		{
-			while (stats(str, input, NULL) == -1 && str)
-			{
-				str = strtok(NULL, ":");
-				strcat(str, "/");
-				strcat(str, input);
-			}
+			found = stat(buff, &st);
+			str = strtok(NULL, ":");
+				if (!str)
+					break;
+			buff = NULL;
+			strcat(buff, str);
+			strcat(buff, "/");
+			strcat(buff, input);
 		}
-		else if(wait(&status) < 0)
-			printf("command not found");
+		if (found == 0)
+		{
+			return (buff);
+		}
+		else
+		{
+			return("Command not found");
+		}
+
 }
 void main(void)
 {
