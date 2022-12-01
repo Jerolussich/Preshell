@@ -10,9 +10,9 @@ int main (int ac, char **av __attribute__((unused)))
 {
 	unsigned long int j,k,fk;
 	size_t ptr = 0;
-	char *buffer, *token, **toks, *concat, *path, *env = "PATH";
+	char *buffer, *token, **toks, *concat, *path, *env = "PATH", *command;
 	pid_t pid;
-	int status;
+	int status, check1;
 	char array[10];
 
 
@@ -36,15 +36,37 @@ int main (int ac, char **av __attribute__((unused)))
 			token = strtok(NULL, " \n");
 		}
 		toks[k] = token;
-		fk = fork();
-		if (fk == -1)
-			printf("fork error");
 
-		if (toks[0][0] != "/") // ls
+		check1 = stat(buff, &st);
+		if (check1 == 0)
+		{
+
+		}
+
+		checkar = toks[0][0];
+		if ((checkar >= 65 && checkar <= 90) || (checkar >= 97 && checkar <= 122)) // ls
 		{
 			path = get_env(env);
-			attach_path(path, toks[0]);
+			command = attach_path(path, toks[0]);
+			if (command == NULL)
+			{
+				printf("Command not found");
+				return (-1);
+			}
+			else // if command found
+			{ // primero checkear si te pasan un path a un programa, si no es encontrado concatenar, si no es encontrado command not found
+				fk = fork();
+				if (fk == -1)
+					return(-1);
+				if(!fk)
+				{
+					execve(command, toks[0], NULL);
+				}
+				else
+					wait(&status);
 
+				free(toks);
+			}
 		}
 		if else // /usr/bin/ls
 		else // /usr/bin/lsa || lsa || #"$#
