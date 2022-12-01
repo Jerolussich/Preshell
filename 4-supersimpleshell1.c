@@ -39,7 +39,6 @@ int main (int ac, char **av __attribute__((unused)))
 		fk = fork();
 		if (fk == -1)
 			printf("fork error");
-		
 		strcpy(array, path);
 		strcat(array, toks[0]);
 		if (!fk)
