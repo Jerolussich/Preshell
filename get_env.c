@@ -3,9 +3,10 @@
 char *get_env(char *name)
 {
 	int i;
-	char *buff, *token, *str;
-	
-	buff = malloc(sizeof(char *) * 100);
+	char *buff = NULL, *token = NULL, *str = NULL;
+	size_t buffsize = 1024;
+
+	buff = malloc(buffsize);
 	for (i = 0; environ[i]; i++)
 	{
 		str = strtok(environ[i], "=");
@@ -19,31 +20,36 @@ char *get_env(char *name)
 }
 char *attach_path(char *str, char const *input)
 {
-	int fk = 0, status, found;
+	int fk = 0, status, found, len = 0;
 	struct stat st;
-	char *buff, *null = '\0';
+	char *buff = NULL, *token = NULL, *path = NULL;
 
-	strtok(str, ":");
-	buff = malloc(sizeof(char) * strlen(str) + 1);
-	strcat(buff, str);
+	/* strtok(str, ":");
+	buff = malloc(buffsize);
+	strcpy(buff, str);
 	strcat(buff, "/");
-	strcat(buff, input);
-	strcat(buff, null);
-	while (stat(buff, &st) == -1)
+	strcat(buff, input); */
+
+	buff = strdup(str);
+	token = strtok(buff, ":");
+	while (token)
 	{
-		found = stat(buff, &st);
-		str = strtok(NULL, ":");
-		if (!str)
-			break;
-		buff = NULL;
-		strcat(buff, str);
-		strcat(buff, "/");
-		strcat(buff, input);
-		strcat(buff, null);
+		path = malloc(sizeof(char) * 1024);
+		strcpy(path, token);
+		strcat(path, "/");
+		strcat(path, input);
+		printf("Command to execute: %s\n", path);
+		if (stat(path, &st) == 0)
+		{
+			free(buff);
+			free(path);
+			return (path);
+		}
+		free (path);
+		token = NULL;
+		token = strtok(NULL, ":");
+
 	}
 	free(buff);
-	if (found == 0)
-		return (buff);
-	else
-		return(NULL);
+	return(NULL);
 }
