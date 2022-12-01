@@ -26,6 +26,7 @@ void * attach_path(char *str, char const *input)
 {
 	int fk = 0;
 	int status;
+	struct stat st;
 
 		strtok(str, ":");
 		strcat(str, "/");
@@ -33,9 +34,8 @@ void * attach_path(char *str, char const *input)
 		fk = fork();
 		if (!fk)
 		{
-			while (execve(str, input, NULL) == -1 && str)
+			while (stats(str, input, NULL) == -1 && str)
 			{
-				fork();
 				str = strtok(NULL, ":");
 				strcat(str, "/");
 				strcat(str, input);
