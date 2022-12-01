@@ -51,14 +51,17 @@ int main (int ac, char **av)
 			}
 		}
 		else// if full path not given
-		{
+		{	printf("test");
 			path = get_env(env);
+			printf("%s test1", path);
 			command = attach_path(path, toks[0]);
+			printf("%s test2", command);
 			if (command == NULL)
 			{
 				perror("Error: ");
 				return (-1);
 			}
+			printf("test3");
 			fk = fork();
 			if (fk == -1)
 				return (-1);

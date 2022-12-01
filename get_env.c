@@ -1,6 +1,6 @@
 #include "main.h"
 
-char * get_env(char *name)
+char *get_env(char *name)
 {
 	int i;
 	char *buff, *token, *str;
@@ -17,17 +17,18 @@ char * get_env(char *name)
 		}
 	}
 }
-char * attach_path(char *str, char const *input)
+char *attach_path(char *str, char const *input)
 {
 	int fk = 0, status, found;
 	struct stat st;
-	char * buff;
+	char *buff, *null = '\0';
 
 	strtok(str, ":");
-	buff = malloc(sizeof(char) * strlen(str));
+	buff = malloc(sizeof(char) * strlen(str) + 1);
 	strcat(buff, str);
 	strcat(buff, "/");
 	strcat(buff, input);
+	strcat(buff, null);
 	while (stat(buff, &st) == -1)
 	{
 		found = stat(buff, &st);
@@ -38,6 +39,7 @@ char * attach_path(char *str, char const *input)
 		strcat(buff, str);
 		strcat(buff, "/");
 		strcat(buff, input);
+		strcat(buff, null);
 	}
 	free(buff);
 	if (found == 0)
