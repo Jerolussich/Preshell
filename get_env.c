@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 extern char **environ;
 
 char * get_env(char *name)
@@ -28,30 +30,27 @@ char * attach_path(char *str, char const *input)
 	struct stat st;
 	char * buff;
 
-		strtok(str, ":");
+	strtok(str, ":");
+	buff = malloc(sizeof(char) * strlen(str));
+	strcat(buff, str);
+	strcat(buff, "/");
+	strcat(buff, input);
+	while (stat(buff, &st) == -1)
+	{
+		found = stat(buff, &st);
+		str = strtok(NULL, ":");
+		if (!str)
+			break;
+		buff = NULL;
 		strcat(buff, str);
 		strcat(buff, "/");
 		strcat(buff, input);
-		while (stat(buff, &st) == -1)
-		{
-			found = stat(buff, &st);
-			str = strtok(NULL, ":");
-				if (!str)
-					break;
-			buff = NULL;
-			strcat(buff, str);
-			strcat(buff, "/");
-			strcat(buff, input);
-		}
-		if (found == 0)
-		{
-			return (buff);
-		}
-		else
-		{
-			return("Command not found");
-		}
-
+	}
+	free(buff);
+	if (found == 0)
+		return (buff);
+	else
+		return(NULL);
 }
 void main(void)
 {
