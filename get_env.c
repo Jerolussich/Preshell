@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/wait.h>
 extern char **environ;
 
 char * get_env(char *name)
@@ -21,21 +22,35 @@ char * get_env(char *name)
 		}
 	}
 }
+void * attach_path(char *str, char const *input)
+{
+	int fk = 0;
+	int status;
+
+		strtok(str, ":");
+		strcat(str, "/");
+		strcat(str, input);
+		fk = fork();
+		if (!fk)
+		{
+			while (execve(str, input, NULL) == -1 && str)
+			{
+				fork();
+				str = strtok(NULL, ":");
+				strcat(str, "/");
+				strcat(str, input);
+			}
+		}
+		else if(wait(&status) < 0)
+			printf("command not found");
+}
 void main(void)
 {
-	char *env = "PATH";
+        char *env = "PATH";
+        char *input = "ls", *output;
 
-	printf("%s\n", get_env(env));
+         output = get_env(env);
+         attach_path(output, input);
 }
-char * find_path(*str, stdin)
-{
-		strtok(str, "=");
-		strcat(str, stdin);
-		while (excve(str, stdin, NULL) == -1)
-		{
-			str = strtok(NULL, ":");
-			strcat(str, stdin);
-			excve(str, stdin, NULL);
-
 
 
