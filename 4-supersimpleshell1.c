@@ -10,7 +10,7 @@ int main (int ac, char **av __attribute__((unused)))
 {
 	unsigned long int j,k,fk;
 	size_t ptr = 0;
-	char *buffer, *token, **toks, *concat, *path = "/bin/";
+	char *buffer, *token, **toks, *concat, *path, *env = "PATH";
 	pid_t pid;
 	int status;
 	char array[10];
@@ -39,18 +39,17 @@ int main (int ac, char **av __attribute__((unused)))
 		fk = fork();
 		if (fk == -1)
 			printf("fork error");
-		strcpy(array, path);
-		strcat(array, toks[0]);
-		if (!fk)
+
+		if (toks[0][0] != "/") // ls
 		{
-			if (execve(array, toks, NULL) == -1)
-				printf("pid is null");
+			path = get_env(env);
+			attach_path(path, toks[0]);
+
 		}
-		else
-		{
-			wait(&status);
-			free(toks);
-		}
+		if else // /usr/bin/ls
+		else // /usr/bin/lsa || lsa || #"$#
+		attach_path(path, toks[0]);
+		free(toks);
 	}
 	return (0);
 }
