@@ -18,38 +18,64 @@ char *get_env(char *name)
 		}
 	}
 }
-char *attach_path(char *str, char const *input)
+char *attach_path(char *str, char **input)
 {
-	int fk = 0, status, found, len = 0;
+	int fk = 0, status, found, len = 0, i = 0, j = 0;
 	struct stat st;
-	char *buff = NULL, *token = NULL, *path = NULL;
+	char *buff = NULL, *token = NULL, **direction = NULL;
+	size_t buffsize = 1024;
 
-	/* strtok(str, ":");
-	buff = malloc(buffsize);
-	strcpy(buff, str);
-	strcat(buff, "/");
-	strcat(buff, input); */
-
-	buff = strdup(str);
-	token = strtok(buff, ":");
-	while (token)
+	direction = malloc(buffsize);
+	if (!direction)
+		return (NULL);
+	token = strtok(str, ":");
+	for (i = 0; token; i++)
 	{
-		path = malloc(sizeof(char) * 1024);
-		strcpy(path, token);
-		strcat(path, "/");
-		strcat(path, input);
-		printf("Command to execute: %s\n", path);
-		if (stat(path, &st) == 0)
-		{
-			free(buff);
-			free(path);
-			return (path);
-		}
-		free (path);
-		token = NULL;
+		direction[i] = token;
 		token = strtok(NULL, ":");
-
 	}
-	free(buff);
+	direction[i] = token;
+
+	while (direction)
+	{
+		char *input_cpy = input[0];
+		printf("Input copy: %s\n", input_cpy);
+		char *str_path = malloc(buffsize);
+		printf("Allocated str_path memory\n");
+		strcpy(str_path, direction[j]);
+		printf("Copy of direction[i]: %s\n", str_path);
+		strcat(str_path, "/");
+		printf("Added XX: %s\n", str_path);
+		strcat(str_path, input_cpy);
+		printf("Added ls: %s\n", str_path);
+		if (stat(str_path, &st) == 0)
+		{
+			free_grid(direction, 1024);
+			return (str_path);
+		}
+		j++;
+		free(str_path);
+	}
+	free_grid(direction, 1024);
 	return(NULL);
+}
+
+/**
+ * free_grid - Frees a 2 dimensional grid
+ * @grid: Grid to be freed
+ * @height: Height of the grid
+*/
+
+void free_grid(char **grid, int height)
+{
+	int i;
+
+	if (!grid)
+	{
+		for (i = 0; i < height; i++)
+		{
+			free(grid[i]);
+		}
+		free(grid);
+	}
 }

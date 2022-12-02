@@ -25,16 +25,15 @@ int main (int ac, char **av)
 			printf("Error\n");
 			return (-1);
 		}
-		toks = malloc(sizeof(char *) * ac);
+		toks = malloc(sizeof(char *) * 1024);
 		if (!toks)
 			return (0);
 		token = strtok(buffer, " \n");
 		for (k = 0; token; k++)
 		{
-			toks[k] = strdup(token);
+			toks[k] = token;
 			token = strtok(NULL, " \n");
 		}
-		toks[k] = token;
 
 		check1 = stat(toks[0], &st);
 		if (check1 == 0)//if given full path
@@ -53,8 +52,11 @@ int main (int ac, char **av)
 		else// if full path not given
 		{
 			path = get_env(env);
-			command = attach_path(path, toks[0]);
-			if (command == NULL)
+			printf("PATH is: %s\n", path);
+			printf("Tok cero es igual a: %s\n", toks[0]);
+			toks[0] = attach_path(path, toks);
+			printf("Fullpath is: %s\n", toks[0] );
+			if (toks[0] == NULL)
 			{
 				perror("Error: ");
 				return (-1);
@@ -63,11 +65,13 @@ int main (int ac, char **av)
 			if (fk == -1)
 				return (-1);
 			if (!fk)
-				execve(command, toks, NULL);
+			{
+				execve(toks[0], toks, NULL);
+			}
 			else
 			{
+				free(toks;
 				wait(&status);
-				free(toks);
 			}
 		}
 	}
