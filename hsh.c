@@ -5,7 +5,7 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 	struct stat st;
 	size_t ptr = 0, buffsize = 1024;
 	int i, stream, check, fk;
-	char *buffer = NULL, *token = NULL, **token_array = NULL;
+	char *buffer = NULL, *token = NULL, **token_array = NULL, *path = NULL;
 
 	while (1)
 	{		/* Prompt display */
@@ -48,8 +48,85 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 			{
 				wait(NULL);
 			}
-
-
+		}
+		else // if full path not given
+		{
+			path = get_env("PATH");
+			printf("Path is: %s\n", path);
+			token_array[0] = attach_path(path, token_array);
+			if (token_array[0] == NULL) // if command is not found
+			{
+				return(-1);
+			}
+			else // if command is found
+			{
+				fk = fork();
+				if (fk < 0)
+				{
+					return (-1);
+				}
+				if (fk == 0) // child process
+				{
+					execve(token_array[0], token_array, NULL);
+				}
+				else
+				{
+					wait(NULL);
+					free(token_array);
+				}
+			}
 		}
 	}
+}
+
+char *get_env(char *name)
+{
+	size_t buffsize = 1024;
+	int i;
+	char *token = NULL, *token_cpy = NULL, *buff = NULL;
+
+	for (int x = 0; environ[x]; x++)
+	{ // en el segundo loop no llega a printear la variable PATH
+		printf("%s\n", environ[x]);
+	}
+	printf("Check 1\n");
+	if (!environ)
+		return (NULL);
+	printf("Check 2\n");
+	for (i = 0; environ[i]; i++)
+	{	
+		buff = environ[i];
+		token = strtok(buff, "=");
+		if (strcmp(token, name) == 0)
+		{// no entra aca en el segundo loop
+			token = strtok(NULL, "=");
+			return (token);
+		}
+	}
+}
+
+char *attach_path(char *str, char **input)
+{
+	struct stat st;
+	size_t buffsize = 1024;
+	int i;
+	char *full_path = NULL, *token = NULL, *str_cpy;
+
+	str_cpy = str;
+	token = strtok(str_cpy, ":");
+	while (token)
+	{
+		full_path = malloc(buffsize);
+		strcpy(full_path, token);
+		strcat(full_path, "/");
+		strcat(full_path, input[0]);
+		if (stat(full_path, &st) == 0)
+		{
+			return(full_path);
+		}
+		free(full_path);
+		token = strtok(NULL, ":");
+
+	}
+	return (NULL);
 }
