@@ -85,23 +85,24 @@ char *get_env(char *name)
 	int i;
 	char *token = NULL, *token_cpy = NULL, *buff = NULL;
 
-	for (int x = 0; environ[x]; x++)
-	{ // en el segundo loop no llega a printear la variable PATH
-		printf("%s\n", environ[x]);
-	}
-	printf("Check 1\n");
 	if (!environ)
 		return (NULL);
-	printf("Check 2\n");
 	for (i = 0; environ[i]; i++)
 	{	
-		buff = environ[i];
+		buff = strdup(environ[i]);
 		token = strtok(buff, "=");
+
 		if (strcmp(token, name) == 0)
-		{// no entra aca en el segundo loop
+		{
 			token = strtok(NULL, "=");
-			return (token);
+			if (token)
+			{
+				token_cpy = strdup(token);
+				free(buff);
+				return (token_cpy);
+			}
 		}
+		free(buff);
 	}
 }
 
