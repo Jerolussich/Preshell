@@ -30,6 +30,8 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 			token = strtok(NULL, " \n");
 		}
 			/* Command execution */
+		if (strcmp(token_array[0], "exit") == 0)
+			exit(0);
 
 		check = stat(token_array[0], &st);
 		if (check == 0) // if given full path
