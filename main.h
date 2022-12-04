@@ -13,4 +13,5 @@ char *get_env(char *name);
 char *find_path(char *str, char *input);
 char * attach_path(char *str, char **input);
 void free_grid(char **grid, int height);
+void print_env();
 #endif

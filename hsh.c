@@ -32,7 +32,8 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 			/* Command execution */
 		if (strcmp(token_array[0], "exit") == 0)
 			exit(0);
-
+		if (strcmp(token_array[0], "env") == 0)
+			print_env();
 		check = stat(token_array[0], &st);
 		if (check == 0) // if given full path
 		{
@@ -132,4 +133,21 @@ char *attach_path(char *str, char **input)
 
 	}
 	return (NULL);
+}
+void print_env()
+{
+	size_t buffsize = 1024;
+	int i;
+	char *token = NULL, *buff = NULL;
+
+	if (!environ)
+		return;
+
+	for (i = 0; environ[i]; i++)
+	{
+		buff = strdup(environ[i]);
+		printf("%s\n", buff);
+	}
+	free(buff);
+	return;
 }
