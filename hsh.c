@@ -12,9 +12,7 @@ int main (int ac, char **av)
 		printf("$ ");
 		buffer = malloc(buffsize);
 		if (!buffer)
-		{
 			return (-1);
-		}
 		stream = getline(&buffer, &ptr, stdin);
 		if (stream == -1)
 		{
@@ -62,13 +60,9 @@ int main (int ac, char **av)
 				return (-1);
 			}
 			if (fk == 0) // child process
-			{
 				execve(token_array[0], token_array, NULL);
-			}
 			else // parent process
-			{
 				wait(NULL);
-			}
 		}
 		else if (check == -1) // if full path not given
 		{
@@ -80,24 +74,21 @@ int main (int ac, char **av)
 				fk =  fork();
 				if (fk < 0)
 				{
+					free(buffer);
 					perror("Error: ");
 					return (-1);
 				}
 				if (fk == 0) // child process
-				{
 					execve(token_array[0], token_array, NULL);
-				}
-			}
+		
 
 			if (check == -1)
-			{
 				perror("Error: ");	
-			}
 			else // parent process
-			{
 				wait(NULL);
-				/* free_grid(token_array);*/
-			}
+
+			free(buffer);
+			free_grid(token_array);
 		}
 	}
 }
