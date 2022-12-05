@@ -1,6 +1,6 @@
 #include "main.h"
 
-int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
+int main (int ac, char **av)
 {
 	struct stat st;
 	size_t ptr = 0, buffsize = 1024;
@@ -10,9 +10,15 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 	while (1)
 	{		/* Prompt display */
 		printf("$ ");
+		buffer = malloc(buffsize);
+		if (!buffer)
+		{
+			return (-1);
+		}
 		stream = getline(&buffer, &ptr, stdin);
 		if (stream == -1)
 		{
+			free(buffer);
 			perror("Error: ");
 			return (-1);
 		}
@@ -20,26 +26,38 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 		token_array = malloc(buffsize);
 		if (!token_array)
 		{
+			free(buffer);
 			perror("Error: ");
 			return (-1);
 		}
-		token = strtok(buffer, " \n");
+		token = strtok(buffer, " 	\n");
 		for (i = 0; token; i++)
 		{
 			token_array[i] = token;
-			token = strtok(NULL, " \n");
+			token = strtok(NULL, "        \n");
 		}
-			/* Command execution */
+		token_array[i] = NULL;
+
+			/* Exit function */
 		if (strcmp(token_array[0], "exit") == 0)
+		{
+			free_grid(token_array);
+			free(buffer);
 			exit(0);
+		}
+			/* Print env function */
 		if (strcmp(token_array[0], "env") == 0)
 			print_env();
+
+			/* Command execution */
 		check = stat(token_array[0], &st);
 		if (check == 0) // if given full path
 		{
 			fk =  fork();
 			if (fk < 0)
 			{
+				free_grid(token_array);
+				free(buffer);
 				perror("Error: ");
 				return (-1);
 			}
@@ -52,31 +70,33 @@ int main (__attribute__((unused)) int ac,__attribute__((unused)) char **av)
 				wait(NULL);
 			}
 		}
-		else // if full path not given
+		else if (check == -1) // if full path not given
 		{
 			path = get_env("PATH");
-			printf("Path is: %s\n", path);
 			token_array[0] = attach_path(path, token_array);
-			if (token_array[0] == NULL) // if command is not found
+			check = stat(token_array[0], &st);
+			if (check == 0)
 			{
-				return(-1);
-			}
-			else // if command is found
-			{
-				fk = fork();
+				fk =  fork();
 				if (fk < 0)
 				{
+					perror("Error: ");
 					return (-1);
 				}
 				if (fk == 0) // child process
 				{
 					execve(token_array[0], token_array, NULL);
 				}
-				else
-				{
-					wait(NULL);
-					free(token_array);
-				}
+			}
+
+			if (check == -1)
+			{
+				perror("Error: ");	
+			}
+			else // parent process
+			{
+				wait(NULL);
+				/* free_grid(token_array);*/
 			}
 		}
 	}
@@ -130,7 +150,6 @@ char *attach_path(char *str, char **input)
 		}
 		free(full_path);
 		token = strtok(NULL, ":");
-
 	}
 	return (NULL);
 }
