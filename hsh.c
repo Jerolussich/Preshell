@@ -17,8 +17,7 @@ int main (int ac, char **av)
 		if (stream == -1)
 		{
 			free(buffer);
-			perror("Error: ");
-			return (-1);
+			exit(0);
 		}
 			/* Argument tokenisation */
 		token_array = malloc(buffsize);
@@ -81,7 +80,7 @@ int main (int ac, char **av)
 				if (fk == 0) // child process
 					execve(token_array[0], token_array, NULL);
 		
-
+			}
 			if (check == -1)
 				perror("Error: ");	
 			else // parent process
