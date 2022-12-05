@@ -9,9 +9,9 @@ int main (int ac, char **av)
 
 	while (1)
 	{
+			/* Prompt display */
 		if (isatty(0))
-			printf("#cisfun$");
-		/* Prompt display */
+			printf("$ ");
 		printf("$ ");
 		buffer = malloc(buffsize);
 		if (!buffer)
@@ -57,6 +57,7 @@ int main (int ac, char **av)
 			if (fk < 0)
 			{
 				free_grid(token_array);
+				printf("Free_grid worked properly");
 				free(buffer);
 				perror("Error: ");
 				return (-1);
@@ -64,12 +65,17 @@ int main (int ac, char **av)
 			if (fk == 0) // child process
 				execve(token_array[0], token_array, NULL);
 			else // parent process
+			{
+				free_grid(token_array);
+                                printf("Free_grid worked properly");
 				wait(NULL);
+			}
 		}
 		else if (check == -1) // if full path not given
 		{
 			path = get_env("PATH");
 			token_array[0] = attach_path(path, token_array);
+			free(path);
 			check = stat(token_array[0], &st);
 			if (check == 0)
 			{
@@ -90,7 +96,7 @@ int main (int ac, char **av)
 				wait(NULL);
 
 			free(buffer);
-			free_grid(token_array);
+		/*	free_grid(token_array); */
 		}
 	}
 }
@@ -117,6 +123,7 @@ char *get_env(char *name)
 				free(buff);
 				return (token_cpy);
 			}
+			free(buff);
 		}
 		free(buff);
 	}
@@ -129,7 +136,7 @@ char *attach_path(char *str, char **input)
 	int i;
 	char *full_path = NULL, *token = NULL, *str_cpy;
 
-	str_cpy = str;
+	str_cpy = strdup(str);
 	token = strtok(str_cpy, ":");
 	while (token)
 	{
@@ -139,11 +146,13 @@ char *attach_path(char *str, char **input)
 		strcat(full_path, input[0]);
 		if (stat(full_path, &st) == 0)
 		{
+			free(str_cpy);
 			return(full_path);
 		}
 		free(full_path);
 		token = strtok(NULL, ":");
 	}
+	free(str_cpy);
 	return (NULL);
 }
 void print_env()

@@ -11,7 +11,7 @@ void free_grid(char **grid)
 	int height= 0, i;
 
 	for (i = 0; grid[i]; i++)
-		heigth++;
+		height++;
 
 	if (grid)
 	{
