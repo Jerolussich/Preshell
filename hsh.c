@@ -8,7 +8,10 @@ int main (int ac, char **av)
 	char *buffer = NULL, *token = NULL, **token_array = NULL, *path = NULL;
 
 	while (1)
-	{		/* Prompt display */
+	{
+		if (isatty(0))
+			printf("#cisfun$");
+		/* Prompt display */
 		printf("$ ");
 		buffer = malloc(buffsize);
 		if (!buffer)
