@@ -11,7 +11,7 @@ int main (int ac, char **av)
 	struct stat st;
 	size_t ptr = 0, buffsize = 1024;
 	int i, stream, check, fk;
-	char *buffer = NULL, *token = NULL, **token_array = NULL, *path = NULL;
+	char *buffer = NULL, *b = NULL, *token = NULL, **token_array = NULL, *path = NULL;
 
 	while (1)
 	{
@@ -31,19 +31,21 @@ int main (int ac, char **av)
 			perror("Error: ");
 			return (-1);
 		}
-		token = strtok(buffer, " \t\n");
+		b = strdup(buffer);
+		token = strtok(b, " \t\n");
 		for (i = 0; token; i++)
 		{
-			token_array[i] = token;
+			token_array[i] = strdup(token);
 			token = strtok(NULL, " \t\n");
 		}
 		token_array[i] = NULL;
+		free(b);
 
 			/* Exit function */
 		if (strcmp(token_array[0], "exit") == 0)
 		{
-			free_grid(token_array);
 			free(buffer);
+			free_grid(token_array);
 			exit(0);
 		}
 			/* Print env function */
@@ -57,9 +59,8 @@ int main (int ac, char **av)
 			fk =  fork();
 			if (fk < 0)
 			{
-				free_grid(token_array);
-				printf("Free_grid worked properly");
 				free(buffer);
+				free_grid(token_array);
 				perror("Error: ");
 				return (-1);
 			}
@@ -96,8 +97,7 @@ int main (int ac, char **av)
 			else // parent process
 				wait(NULL);
 
-			free(buffer);
-		/*	free_grid(token_array); */
+			free_grid(token_array);
 		}
 	}
 }
@@ -158,6 +158,7 @@ char *attach_path(char *str, char **input)
 		strcat(full_path, input[0]);
 		if (stat(full_path, &st) == 0)
 		{
+			free(input[0]);
 			free(str_cpy);
 			return(full_path);
 		}
