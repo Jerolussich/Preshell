@@ -1,5 +1,11 @@
 #include "main.h"
 
+/**
+ * main - shell 
+ * @ac: argument count
+ * @av: argument vector
+ * Return: return -1 if failed or command output
+ */
 int main (int ac, char **av)
 {
 	struct stat st;
@@ -99,6 +105,11 @@ int main (int ac, char **av)
 	}
 }
 
+/**
+ * get_env - search env por specific line
+ * @name: word to look for in env
+ * Return: return NULL if failed or pointer to path
+ */
 char *get_env(char *name)
 {
 	size_t buffsize = 1024;
@@ -126,6 +137,12 @@ char *get_env(char *name)
 		free(buff);
 	}
 }
+/**
+ * attach_path - add corresponding path to command given
+ * @str: string given with path
+ * @input:input given in shell
+ * Return: string with full path or NULL if failed
+ */
 
 char *attach_path(char *str, char **input)
 {
@@ -153,6 +170,10 @@ char *attach_path(char *str, char **input)
 	free(str_cpy);
 	return (NULL);
 }
+/**
+ * print_env - print env content
+ * Return: void
+ */
 void print_env()
 {
 	size_t buffsize = 1024;
