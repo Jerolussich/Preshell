@@ -11,9 +11,6 @@ int main (int ac, char **av)
 	{
 		isatty(STDIN_FILENO) == 1 ? write(1, "$ ", 2) : 0;
 			/* Prompt display */
-		if (isatty(0))
-			printf("$ ");
-		printf("$ ");
 		buffer = malloc(buffsize);
 		if (!buffer)
 			return (-1);
