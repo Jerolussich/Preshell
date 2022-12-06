@@ -17,9 +17,6 @@ int main (int ac, char **av)
 	{
 		isatty(STDIN_FILENO) == 1 ? write(1, "$ ", 2) : 0;
 			/* Prompt display */
-		buffer = malloc(buffsize);
-		if (!buffer)
-			return (-1);
 		stream = getline(&buffer, &ptr, stdin);
 		if (stream == -1)
 		{
@@ -34,11 +31,11 @@ int main (int ac, char **av)
 			perror("Error: ");
 			return (-1);
 		}
-		token = strtok(buffer, " 	\n");
+		token = strtok(buffer, " \t\n");
 		for (i = 0; token; i++)
 		{
 			token_array[i] = token;
-			token = strtok(NULL, "        \n");
+			token = strtok(NULL, " \t\n");
 		}
 		token_array[i] = NULL;
 
