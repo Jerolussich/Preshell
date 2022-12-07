@@ -40,6 +40,11 @@ int main (int ac, char **av)
 		}
 		token_array[i] = NULL;
 		free(b);
+		if (!token_array[0]) // if token_array[0] is made of tokens
+		{
+			free_grid(token_array);
+			continue;
+		}
 
 			/* Exit function */
 		if (strcmp(token_array[0], "exit") == 0)
@@ -65,11 +70,10 @@ int main (int ac, char **av)
 				return (-1);
 			}
 			if (fk == 0) // child process
-				execve(token_array[0], token_array, NULL);
+				execve(token_array[0], token_array, environ);
 			else // parent process
 			{
 				free_grid(token_array);
-                                printf("Free_grid worked properly");
 				wait(NULL);
 			}
 		}
@@ -78,6 +82,11 @@ int main (int ac, char **av)
 			path = get_env("PATH");
 			token_array[0] = attach_path(path, token_array);
 			free(path);
+			if (token_array[0] == NULL) // if command not found
+			{
+				free_grid(token_array);
+				continue;
+			}
 			check = stat(token_array[0], &st);
 			if (check == 0)
 			{
@@ -89,11 +98,9 @@ int main (int ac, char **av)
 					return (-1);
 				}
 				if (fk == 0) // child process
-					execve(token_array[0], token_array, NULL);
+					execve(token_array[0], token_array, environ);
 		
 			}
-			if (check == -1)
-				perror("Error: ");	
 			else // parent process
 				wait(NULL);
 
