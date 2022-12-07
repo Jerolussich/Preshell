@@ -82,11 +82,6 @@ int main (int ac, char **av)
 			path = get_env("PATH");
 			token_array[0] = attach_path(path, token_array);
 			free(path);
-			if (token_array[0] == NULL) // if command not found
-			{
-				free_grid(token_array);
-				continue;
-			}
 			check = stat(token_array[0], &st);
 			if (check == 0)
 			{
@@ -100,6 +95,12 @@ int main (int ac, char **av)
 				if (fk == 0) // child process
 					execve(token_array[0], token_array, environ);
 		
+			}
+			if (check == -1) // if command not found
+			{
+				printf("Command not found\n");
+				free_grid(token_array);
+				continue;
 			}
 			else // parent process
 				wait(NULL);
@@ -173,7 +174,7 @@ char *attach_path(char *str, char **input)
 		token = strtok(NULL, ":");
 	}
 	free(str_cpy);
-	return (NULL);
+	return (input[0]);
 }
 /**
  * print_env - print env content
