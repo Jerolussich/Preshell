@@ -20,6 +20,7 @@ int main (int ac, char **av)
 		stream = getline(&buffer, &ptr, stdin);
 		if (stream == -1)
 		{
+			printf("ctrld ashei\n");
 			free(buffer);
 			exit(0);
 		}
@@ -53,10 +54,6 @@ int main (int ac, char **av)
 			free_grid(token_array);
 			exit(0);
 		}
-			/* Print env function */
-		if (strcmp(token_array[0], "env") == 0)
-			print_env();
-
 			/* Command execution */
 		check = stat(token_array[0], &st);
 		if (check == 0) // if given full path
@@ -175,25 +172,4 @@ char *attach_path(char *str, char **input)
 	}
 	free(str_cpy);
 	return (input[0]);
-}
-/**
- * print_env - print env content
- * Return: void
- */
-void print_env()
-{
-	size_t buffsize = 1024;
-	int i;
-	char *token = NULL, *buff = NULL;
-
-	if (!environ)
-		return;
-
-	for (i = 0; environ[i]; i++)
-	{
-		buff = strdup(environ[i]);
-		printf("%s\n", buff);
-	}
-	free(buff);
-	return;
 }
