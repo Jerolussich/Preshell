@@ -1,0 +1,44 @@
+.TH   "SIMPLE_SHELL" "1" "2022 December 10" "Hsh 2.0"
+.SH NAME
+hsh \- Holberton SHell, command language interpreter
+.SH SYNOPSIS
+.B hsh
+.OP -abCefhimnuvx
+.OP command_string
+|
+.OP file
+.SH DESCRIPTION
+The Hsh utility is an sh-compatible command language interpreter that shall execute commands read from a command line string, the standard input, or a specified file.
+.SH OPTIONS
+.TP
+.BR -c
+Read commands from the command_string operand. No commands shall be read from the standard input.
+.TP
+.BR -i
+Specify that the shell is interactive; see below.
+.TP
+.BR -s
+Read commands from the standard input.
+.TP
+If there are no operands and the -c option is not specified, the -s option shall be assumed.
+.TP
+If the -i option is present, or if there are no operands and the shell's standard input and standard error are attached to a terminal, the shell is considered to be interactive.
+.SH INPUT FILES
+The input file shall be a text file, except that line lengths shall be unlimited. If the input file consists solely of zero or more blank lines and comments, sh shall exit with a zero exit status.
+.SH ENVIROMENT VARIABLES
+The following environment variables shall affect the execution of hsh:
+.TP
+.BR ENV
+This variable, when and only when an interactive shell is invoked, shall be subjected to parameter expansion (see Section 2.6.2, Parameter Expansion) by the shell, and the resulting value shall be used as a pathname of a file containing shell commands to execute in the current environment.  The file need not be executable. If the expanded value of ENV is not an absolute pathname, the results are unspecified.  ENV shall be ignored if the real and effective user IDs or real and effective group IDs of the process are different.
+.TP
+.BR PATH
+Establish a string formatted as described in the Base Definitions volume of POSIX.1‐2017, Chapter 8, Environment Variables, used to effect command interpretation; see Section 2.9.1.1, Command Search and Execution.
+.SH EXAMPLES
+.TP 
+1. Execute a shell command from a string:
+hsh -c "cat myfile"
+.TP
+2. Execute a shell script from a file in the current directory:2. Execute a shell script from a file in the current directory:
+hsh my_shell_cmds
+.SH AUTHOR
+.B Writing by Dario Nalerio, Jeronimo Lussich and Vicente Debrun

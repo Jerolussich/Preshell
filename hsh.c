@@ -20,7 +20,6 @@ int main (int ac, char **av)
 		stream = getline(&buffer, &ptr, stdin);
 		if (stream == -1)
 		{
-			printf("ctrld ashei\n");
 			free(buffer);
 			exit(0);
 		}
@@ -85,6 +84,7 @@ int main (int ac, char **av)
 				fk =  fork();
 				if (fk < 0)
 				{
+					free_grid(token_array);
 					free(buffer);
 					perror("Error: ");
 					return (-1);
